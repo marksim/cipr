@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
+
+require 'choice'
+require 'cipr'
+
+Choice.options do
+  banner "Usage: #{File.basename(__FILE__)} [-u <github_user> [-p <github_password> | -t <github_token>]] http://github.com/<github_user>/<github_repo>"
+  header ''
+  header 'Github Options:'
+
+  option :user do
+    short '-u'
+    long '--user=USERNAME'
+    desc "Github username for authentication"
+  end
+
+  option :password do
+    short '-p'
+    long '--password=PASSWORD'
+    desc "Github password for authentication"
+  end
+
+  option :token do
+    short '-t'
+    long '--token=TOKEN'
+    desc "Github token for authentication"
+  end
+
+  separator ''
+  separator 'Common options: '
+
+  option :help do
+    long '--help'
+    desc 'Show this message'
+  end
+
+  option :version do
+    short '-v'
+    long '--version'
+    desc 'Show version'
+    action do
+      puts "#{File.basename(__FILE__)} v#{Cipr::Version}"
+      exit
+    end
+  end
+end
+
+options = Choice.choices
+
+Cipr::Server.go(Choice.rest[0].to_s, options)
