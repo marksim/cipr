@@ -5,7 +5,7 @@ require 'choice'
 require 'cipr'
 
 Choice.options do
-  banner "Usage: #{File.basename(__FILE__)} [-u <github_user> [-p <github_password> | -t <github_token>]] http://github.com/<github_user>/<github_repo>"
+  banner "Usage: #{File.basename(__FILE__)} [-u <github_user>] [-p <github_password>] user/repo"
   header ''
   header 'Github Options:'
 
@@ -21,11 +21,18 @@ Choice.options do
     desc "Github password for authentication"
   end
 
-  option :token do
-    short '-t'
-    long '--token=TOKEN'
-    desc "Github token for authentication"
+  option :directory do
+    short '-d'
+    long '--directory=GIT_REPO_DIRECTORY'
+    desc "Github repo location"
   end
+
+  option :command do
+    short '-c'
+    long '--command=COMMAND_TO_RUN'
+    desc "Command to run to test, defaults to 'rake spec'"
+  end
+
 
   separator ''
   separator 'Common options: '

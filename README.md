@@ -15,6 +15,12 @@ Watches your repository for open pull requests
 Upon finding one, clones the repository in a new directory, applies the pull request patch, and runs 'rake spec' on it
 The results are added as a comment to the pull request
 
+If you have private repositories, you'll need to set up your ~/.netrc file like so:
+    
+    machine github.com
+    login <github_username>
+    password <github_password>
+
 ## TODO ##
 
 Provide a mechanism for defining what to run on a repo

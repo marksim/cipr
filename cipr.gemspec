@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   s.executables       = %w( cipr )
 
   s.add_runtime_dependency     'choice'
-  s.add_runtime_dependency     'json'
+  s.add_runtime_dependency     'github_api'
+  s.add_runtime_dependency     'git'
   s.add_development_dependency 'rspec'
 
   s.description       = "cipr tests your pull requests and comments the results"

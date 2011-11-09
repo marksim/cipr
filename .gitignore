@@ -1,6 +1,4 @@
-.DS_Store
-rdoc
-pkg
-*.tmproj
-tmp/**/*
-tmp/*
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
