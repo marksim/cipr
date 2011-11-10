@@ -85,8 +85,7 @@ module Cipr
       `/bin/bash -l -c 'cd #{git.dir} && #{@prep}'`
       puts @command
       `/bin/bash -l -c 'cd #{git.dir} && #{@command} > /tmp/test_output.txt'`
-      result = File.open("/tmp/test_output.txt").gets
-      split_comment(result, 80)
+      split_comment(File.open("/tmp/test_output.txt").read, 80)
     end
 
     def split_comment(comment, line_length=80)
