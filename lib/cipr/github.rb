@@ -62,6 +62,7 @@ module Cipr
     def apply_pull_request(pr)
       pr = pull_request(pr.respond_to?(:number) ? pr.number : pr)
       git.branch(pr.merge_to).checkout
+      git.pull
       git.branch("#{pr.username}-#{pr.merge_from}").checkout
       git.add_remote(pr.username, pr.pull_repo) unless git.remotes.map(&:to_s).include?(pr.username)
       git.pull(pr.username, "#{pr.username}/#{pr.merge_from}", "Merge pull request ##{pr.number} - #{pr.title}")
@@ -69,7 +70,6 @@ module Cipr
 
     def checkout_pull_request(pr)
       pr = pull_request(pr.respond_to?(:number) ? pr.number : pr)
-      git.branch(pr.merge_to).checkout
       git.add_remote(pr.username, pr.pull_repo) unless git.remotes.map(&:to_s).include?(pr.username)
       git.branch("#{pr.username}/#{pr.merge_from}").checkout
     end
