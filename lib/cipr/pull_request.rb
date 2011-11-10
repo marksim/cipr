@@ -10,8 +10,8 @@ module Cipr
       @repo.comment(self.number, body)
     end
 
-    def mergable?
-      mergable
+    def mergeable?
+      mergeable
     end
 
     def merged?
@@ -41,6 +41,10 @@ module Cipr
 
     def apply
       @repo.apply_pull_request(self)
+    end
+
+    def checkout
+      @repo.checkout_pull_request(self)
     end
 
   end

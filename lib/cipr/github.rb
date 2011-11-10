@@ -9,7 +9,8 @@ module Cipr
     def initialize(repo, options={})
       @repo_user, @repo = repo.split("/")
       @directory = options[:directory]
-      @command   = options[:command] || 'rake spec'
+      @prep      = options[:prep]    || 'bundle && rake db:migrate'
+      @command   = options[:command] || 'bundle exec rake spec'
       @auth      = {:username => options[:user] || @repo_user, :password => options[:password]}.reject {|k,v| v.nil?}
     end
 
@@ -28,14 +29,29 @@ module Cipr
     def test
       tested = 0
       pull_requests.each do |pr|
-        next unless pr.mergeable? && !pr.merged?
         pr = pull_request(pr.number)
-        if pr.apply ~= /Updating/
-          output = run_specs
-          pr.comment(output)
-          tested += 1
+        next if pr.merged?
+
+        ready = false
+        if pr.mergeable?
+          puts "Applying Pull Request ##{pr.number}"
+          ready = pr.apply =~ /Updating/
+        else
+          puts "Checking out Pull Request ##{pr.number}"
+          pr.checkout
+          ready = true
+        end
+
+        if ready
+          puts "Testing Pull Request ##{pr.number}"
+          output = execute
+          unless output.nil? || output.strip.empty?
+            pr.comment(output) 
+            tested += 1
+          end
         end
       end
+      puts "Tested #{tested} pull requests this round..."
       tested
     end
 
@@ -51,23 +67,39 @@ module Cipr
       git.pull(pr.username, "#{pr.username}/#{pr.merge_from}", "Merge pull request ##{pr.number} - #{pr.title}")
     end
 
+    def checkout_pull_request(pr)
+      pr = pull_request(pr.respond_to?(:number) ? pr.number : pr)
+      git.branch(pr.merge_to).checkout
+      git.add_remote(pr.username, pr.pull_repo) unless git.remotes.map(&:to_s).include?(pr.username)
+      git.branch("#{pr.username}/#{pr.merge_from}").checkout
+    end
+
     def auth_string
       [@auth[:username], @auth[:password]].compact.join(":")
     end
 
     private
 
-    def run_specs
-      git.chdir do
-        execute
-      end
-    end
-
     def execute
-      `#@command > /tmp/test_output.txt`
-      File.open("/tmp/test_output.txt").gets
+      puts @prep
+      `/bin/bash -l -c 'cd #{git.dir} && #{@prep}'`
+      puts @command
+      `/bin/bash -l -c 'cd #{git.dir} && #{@command} > /tmp/test_output.txt'`
+      result = File.open("/tmp/test_output.txt").gets
+      split_comment(result, 80)
     end
 
+    def split_comment(comment, line_length=80)
+      comment.split("\n").map do |l|
+        p = []
+        while l.length > line_length
+          p << l[0..(line_length-1)]
+          l = l[line_length..-1]
+        end
+        p << l
+        p.join("\n")
+      end.join("\n")
+    end
 
 
     def get(path, options={})

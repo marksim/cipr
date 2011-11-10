@@ -5,7 +5,7 @@ require 'choice'
 require 'cipr'
 
 Choice.options do
-  banner "Usage: #{File.basename(__FILE__)} [-u <github_user>] [-p <github_password>] user/repo"
+  banner "Usage: #{File.basename(__FILE__)} [-u <github_user>] [-p <github_password>] [-d] user/repo"
   header ''
   header 'Github Options:'
 

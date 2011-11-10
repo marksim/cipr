@@ -8,6 +8,7 @@ module Cipr
       wait_time = 1
       c = Cipr::Repo.new(repo, options)
       while true
+        puts "Checking for Pull Requests..."
         if c.test > 0
           wait_time = 2
         else
