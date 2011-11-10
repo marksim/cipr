@@ -35,7 +35,7 @@ module Cipr
         ready = false
         if pr.mergeable?
           puts "Applying Pull Request ##{pr.number}"
-          ready = pr.apply =~ /Updating/
+          ready = (pr.apply =~ /(Already|CONFLICT)/).nil?
         else
           puts "Checking out Pull Request ##{pr.number}"
           pr.checkout

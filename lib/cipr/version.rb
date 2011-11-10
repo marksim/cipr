@@ -1,3 +1,3 @@
 module Cipr
-  Version = VERSION = "0.1.1"
+  Version = VERSION = "0.1.2"
 end
