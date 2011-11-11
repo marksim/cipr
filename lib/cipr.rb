@@ -7,14 +7,26 @@ module Cipr
     def self.go(repo, options={})
       wait_time = 1
       c = Cipr::Repo.new(repo, options)
-      while true
-        puts "Checking for Pull Requests..."
-        if c.test > 0
-          wait_time = 2
-        else
-          wait_time += 2 if wait_time < 30
+
+      begin
+        sleep 1
+        while true
+          puts "Checking for Pull Requests..."
+          restart_on_interrupt = true
+          if c.test > 0
+            wait_time = 2
+          else
+            wait_time += 2 if wait_time < 30
+          end
+          
+          sleep 60*wait_time
         end
-        sleep 60*wait_time
+      rescue Interrupt => i
+        if restart_on_interrupt
+          restart_on_interrupt = false
+          puts "Hit ^C again to quit"
+          retry 
+        end
       end
     end
   end
