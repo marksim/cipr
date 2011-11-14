@@ -5,7 +5,9 @@ Cipr is continuous integration for your pull requests.  It detects new pull reqe
 ## Basic Usage ##
 
     gem install cipr
-    cipr [-u <github_user> [-p <github_password> | -t <github_token>]] http://github.com/<github_user>/<github_repo>
+    cipr -u <github_user> -p <github_password> [-d <code directory>] [-c '<command to run>'] [-pc '<prep commmand to run>'] <github_user>/<github_repo>
+
+Pull requests are polled for at a decaying interval that maxes out at every 30 minutes.  You can automatically trigger the poll again by hitting ^C once.  To quit cipr, simply hit ^C twice quickly.
 
 ## Configuration ##
 
@@ -20,10 +22,6 @@ If you have private repositories, you'll need to set up your ~/.netrc file like 
     machine github.com
     login <github_username>
     password <github_password>
-
-## TODO ##
-
-Provide a mechanism for defining what to run on a repo
 
 ## About ##
 

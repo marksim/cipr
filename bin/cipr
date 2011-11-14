@@ -33,6 +33,12 @@ Choice.options do
     desc "Command to run to test, defaults to 'rake spec'"
   end
 
+  option :prep do
+    short '-pc'
+    long '--prep=PREP_COMMAND'
+    desc "Command to run prior to executing the -c command."
+  end
+
 
   separator ''
   separator 'Common options: '
