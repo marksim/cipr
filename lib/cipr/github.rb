@@ -61,6 +61,7 @@ module Cipr
 
     def apply_pull_request(pr)
       pr = pull_request(pr.respond_to?(:number) ? pr.number : pr)
+      git.reset_hard
       git.branch(pr.merge_to).checkout
       git.pull("origin", pr.merge_to)
       git.branch("#{pr.username}-#{pr.merge_from}").checkout
